@@ -9,17 +9,37 @@ class ReservationController extends Controller
 {
     public function store(ReservationStoreRequest $request, Skill $skill)
     {
-        // いったん暫定：認証が無いので header から user id を受ける
-// Next側から "X-User-Id" を送る運用にしておく（あとで Sanctum/Token に置換）
-        $ownerId = $request->header('X-User-Id');
-        if (!$ownerId) {
+        $userId = $request->header('X-User-Id');
+        if (!$userId) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
+        // 自分のスキルを予約禁止
+        if ($skill->owner_id === $userId) {
+            return response()->json([
+                'message' => '自分のスキルは予約できません',
+            ], 422);
+        }
+
+        $date = $request->date('date');
+
+        // 同日時重複をアプリ側でも先に弾く（DBユニークの前に、メッセージを整えるため）
+        $exists = Reservation::query()
+            ->where('owner_id', $userId)
+            ->where('skill_id', $skill->id)
+            ->where('date', $date)
+            ->exists();
+
+        if ($exists) {
+            return response()->json([
+                'message' => '同じ日時で既に予約済みです',
+            ], 422);
+        }
+
         $reservation = Reservation::create([
-            'owner_id' => $ownerId,
+            'owner_id' => $userId,
             'skill_id' => $skill->id,
-            'date' => $request->date('date'),
+            'date' => $date,
             'status' => 'PENDING',
             'message' => $request->input('message'),
         ]);

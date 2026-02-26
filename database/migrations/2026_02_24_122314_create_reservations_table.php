@@ -7,6 +7,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('reservations', function (Blueprint $table) {
+            $table->unique(['owner_id', 'skill_id', 'date'], 'uniq_reservation_owner_skill_date');
             $table->ulid('id')->primary();
             $table->string('owner_id');
             $table->ulid('skill_id');
