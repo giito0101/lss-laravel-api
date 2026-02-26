@@ -2,6 +2,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
+use App\Enums\SkillCategory;
 
 class SkillIndexRequest extends FormRequest
 {
@@ -9,6 +11,7 @@ class SkillIndexRequest extends FormRequest
     {
         return [
             'keyword' => ['nullable', 'string', 'max:300'],
+            'category' => ['required', new Enum(SkillCategory::class)],
         ];
     }
 
