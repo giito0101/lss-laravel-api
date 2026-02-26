@@ -19,9 +19,7 @@ class SkillController extends Controller
             });
         }
 
-        return response()->json([
-            'data' => $q->orderByDesc('created_at')->paginate(20),
-        ]);
+        return Skill::query()->latest()->paginate(20);
     }
 
     public function show(Skill $skill)

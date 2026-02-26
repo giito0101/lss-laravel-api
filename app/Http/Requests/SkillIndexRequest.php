@@ -11,7 +11,7 @@ class SkillIndexRequest extends FormRequest
     {
         return [
             'keyword' => ['nullable', 'string', 'max:300'],
-            'category' => ['required', new Enum(SkillCategory::class)],
+            'category' => ['nullable', new Enum(SkillCategory::class)],
         ];
     }
 

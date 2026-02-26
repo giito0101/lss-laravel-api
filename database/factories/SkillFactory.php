@@ -13,7 +13,7 @@ class SkillFactory extends Factory
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'price' => $this->faker->numberBetween(1000, 20000),
-            'category' => $this->faker->randomElement(['Programming', 'Design', 'Language']),
+            'category' => $this->faker->randomElement(['PROGRAMMING', 'DESIGN', 'LANGUAGE']),
             'area' => $this->faker->randomElement(['Tokyo', 'Kanagawa', 'Chiba']),
             'image_url' => null,
         ];
