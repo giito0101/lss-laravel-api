@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SkillIndexRequest;
@@ -19,7 +20,12 @@ class SkillController extends Controller
             });
         }
 
-        return Skill::query()->latest()->paginate(20);
+        $category = $request->input('category');
+        if ($category) {
+            $q->where('category', $category);
+        }
+
+        return $q->latest()->paginate(20);
     }
 
     public function show(Skill $skill)
