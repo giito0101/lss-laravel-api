@@ -27,4 +27,4 @@ COPY docker/nginx.conf /etc/nginx/sites-available/default
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "php artisan config:clear && php artisan migrate --force || true && php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "php artisan config:clear && php artisan migrate:fresh --seed --force && php-fpm -D && nginx -g 'daemon off;'"]
