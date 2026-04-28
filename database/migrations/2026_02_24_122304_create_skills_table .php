@@ -7,15 +7,17 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('skills', function (Blueprint $table) {
-            $table->ulid('id')->primary();
-            $table->string('owner_id'); // 認証導入後にusers.idへFKでもOK
+            $table->string('id')->primary();
+            $table->string('owner_id');
             $table->string('title');
             $table->text('description');
             $table->integer('price');
-            $table->string('category'); // enum化は後でOK
+            $table->string('category');
             $table->string('area');
             $table->string('image_url')->nullable();
             $table->timestamps();
+
+            $table->foreign('owner_id')->references('id')->on('users')->cascadeOnDelete();
             $table->index(['category', 'area']);
         });
     }

@@ -1,16 +1,19 @@
 <?php
+
 namespace App\Http\Controllers;
 
+use App\Enums\ReservationStatus;
 use App\Http\Requests\ReservationStoreRequest;
 use App\Models\Reservation;
 use App\Models\Skill;
+use Illuminate\Http\JsonResponse;
 
 class ReservationController extends Controller
 {
-    public function store(ReservationStoreRequest $request, Skill $skill)
+    public function store(ReservationStoreRequest $request, Skill $skill): JsonResponse
     {
         $userId = $request->header('X-User-Id');
-        if (!$userId) {
+        if (! $userId) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
@@ -40,7 +43,7 @@ class ReservationController extends Controller
             'owner_id' => $userId,
             'skill_id' => $skill->id,
             'date' => $date,
-            'status' => 'PENDING',
+            'status' => ReservationStatus::Pending,
             'message' => $request->input('message'),
         ]);
 

@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Enums\ReservationStatus;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Reservation extends Model
+class Review extends Model
 {
     use HasUuids;
+
+    public const UPDATED_AT = null;
 
     public $incrementing = false;
 
@@ -18,15 +18,9 @@ class Reservation extends Model
 
     protected $fillable = [
         'owner_id',
+        'rating',
+        'comment',
         'skill_id',
-        'date',
-        'status',
-        'message',
-    ];
-
-    protected $casts = [
-        'date' => 'datetime',
-        'status' => ReservationStatus::class,
     ];
 
     public function owner(): BelongsTo
@@ -37,10 +31,5 @@ class Reservation extends Model
     public function skill(): BelongsTo
     {
         return $this->belongsTo(Skill::class);
-    }
-
-    public function conversation(): HasOne
-    {
-        return $this->hasOne(Conversation::class);
     }
 }

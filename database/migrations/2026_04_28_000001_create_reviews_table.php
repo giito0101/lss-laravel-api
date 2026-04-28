@@ -8,24 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('reservations', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->string('id')->primary();
             $table->string('owner_id');
+            $table->unsignedTinyInteger('rating');
+            $table->text('comment')->nullable();
             $table->string('skill_id');
-            $table->dateTime('date');
-            $table->string('status')->default('PENDING');
-            $table->text('message')->nullable();
-            $table->timestamps();
+            $table->dateTime('created_at');
 
-            $table->unique(['owner_id', 'skill_id', 'date'], 'uniq_reservation_owner_skill_date');
             $table->foreign('owner_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('skill_id')->references('id')->on('skills')->cascadeOnDelete();
-            $table->index(['skill_id', 'date']);
+            $table->index('skill_id');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('reviews');
     }
 };

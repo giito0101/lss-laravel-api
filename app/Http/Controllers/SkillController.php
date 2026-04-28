@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SkillIndexRequest;
 use App\Models\Skill;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\JsonResponse;
 
 class SkillController extends Controller
 {
-    public function index(SkillIndexRequest $request)
+    public function index(SkillIndexRequest $request): LengthAwarePaginator
     {
         $q = Skill::query();
 
@@ -28,9 +30,8 @@ class SkillController extends Controller
         return $q->latest()->paginate(20);
     }
 
-    public function show(Skill $skill)
+    public function show(Skill $skill): JsonResponse
     {
-        // 必要なら reservations の件数なども付与
         return response()->json([
             'data' => $skill,
         ]);
