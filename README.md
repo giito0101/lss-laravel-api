@@ -2,7 +2,7 @@
 
 LocalSkillShare のバックエンド API です。
 
-スキルを探して詳細を確認し、希望日時で予約する流れを Laravel API として実装しています。フロントエンドは別リポジトリの `next-laravel-front` から接続する想定です。
+スキルを探して詳細を確認し、希望日時で予約する流れを Laravel API として実装しています。
 
 ## できること
 
@@ -13,6 +13,17 @@ LocalSkillShare のバックエンド API です。
 - スキルに対して予約を作成できる
 - 自分のスキルへの予約を防げる
 - 同じユーザー・同じスキル・同じ日時の重複予約を防げる
+
+## 現在のデータモデル
+
+- `users`
+- `skills`
+- `reservations`
+- `reviews`
+- `conversations`
+- `messages`
+
+初期状態の `cache` / `jobs` 系テーブルは使わない構成に寄せています。
 
 ## 技術スタック
 
@@ -28,13 +39,13 @@ LocalSkillShare のバックエンド API です。
 | --- | --- | --- |
 | `GET` | `/api/skills` | スキル一覧を取得 |
 | `GET` | `/api/skills?keyword=Laravel` | キーワード検索 |
-| `GET` | `/api/skills?category=PROGRAMMING` | カテゴリ検索 |
+| `GET` | `/api/skills?category=ENGLISH` | カテゴリ検索 |
 | `GET` | `/api/skills/{skill}` | スキル詳細を取得 |
 | `POST` | `/api/skills/{skill}/reservations` | 予約を作成 |
 
-カテゴリは現在 `PROGRAMMING`, `DESIGN`, `LANGUAGE` に対応しています。
+カテゴリは現在 `ENGLISH`, `DOG_TRAINING`, `PC_SUPPORT`, `PHOTO`, `OTHER` に対応しています。
 
-予約作成は、認証導入前の簡易実装として `X-User-Id` ヘッダーで予約者を識別します。
+予約作成 API は、認証未導入の暫定実装として `X-User-Id` ヘッダーで予約者を識別します。
 
 ```bash
 curl -X POST "http://127.0.0.1:8000/api/skills/{skill_id}/reservations" \
@@ -53,7 +64,7 @@ composer install
 cp .env.example .env
 php artisan key:generate
 touch database/database.sqlite
-php artisan migrate --seed
+php artisan migrate:fresh --seed
 php artisan serve
 ```
 
@@ -101,4 +112,5 @@ Tests: 7 passed (17 assertions)
 - DB は SQLite を使用しています。
 - Docker 実行時の SQLite データは、コンテナを作り直すと消える前提です。
 - 本格的なユーザー認証は未導入です。
+- そのため予約作成時のみ `X-User-Id` ヘッダーを使っています。
 - API ルートは `routes/api.php` に定義しています。
