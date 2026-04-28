@@ -11,23 +11,28 @@ class SkillController extends Controller
 {
     public function index(SkillIndexRequest $request): LengthAwarePaginator
     {
-        $q = Skill::query();
+        $skills = Skill::query();
 
-        $keyword = $request->input('keyword');
-        if ($keyword) {
-            $q->where(function ($w) use ($keyword) {
-                $w->where('title', 'like', "%{$keyword}%")
+        $keyword = $request->string('q')->toString();
+        if ($keyword !== '') {
+            $skills->where(function ($query) use ($keyword) {
+                $query->where('title', 'like', "%{$keyword}%")
                     ->orWhere('description', 'like', "%{$keyword}%")
                     ->orWhere('area', 'like', "%{$keyword}%");
             });
         }
 
-        $category = $request->input('category');
-        if ($category) {
-            $q->where('category', $category);
+        $category = $request->string('category')->toString();
+        if ($category !== '') {
+            $skills->where('category', $category);
         }
 
-        return $q->latest()->paginate(20);
+        $area = $request->string('area')->toString();
+        if ($area !== '') {
+            $skills->where('area', 'like', "%{$area}%");
+        }
+
+        return $skills->latest()->paginate(20);
     }
 
     public function show(Skill $skill): JsonResponse
