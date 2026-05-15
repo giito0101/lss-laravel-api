@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SkillIndexRequest;
+use App\Http\Resources\SkillResource;
 use App\Models\Skill;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class SkillController extends Controller
 {
-    public function index(SkillIndexRequest $request): LengthAwarePaginator
+    public function index(SkillIndexRequest $request): AnonymousResourceCollection
     {
         $skills = Skill::query();
 
@@ -32,13 +32,11 @@ class SkillController extends Controller
             $skills->where('area', 'like', "%{$area}%");
         }
 
-        return $skills->latest()->paginate(20);
+        return SkillResource::collection($skills->latest()->paginate(20));
     }
 
-    public function show(Skill $skill): JsonResponse
+    public function show(Skill $skill): SkillResource
     {
-        return response()->json([
-            'data' => $skill,
-        ]);
+        return new SkillResource($skill);
     }
 }
